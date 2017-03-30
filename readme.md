@@ -30,8 +30,11 @@ var Uploader = new HubspotUploader({
 	hapikey: 'XXXXXX'
 });
 
+//pull a remote template
+Uploader.pull(fileId);
+
 //start watchers
-Uploader.init();
+Uploader.start();
 
 //sync with remote
 Uploader.sync();

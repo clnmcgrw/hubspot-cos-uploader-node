@@ -49,3 +49,7 @@ The synchronization feature of this package is not 100% bulletproof - avoid addi
 Since file events can only be known about once the watchers are started, work done outside the watched environment may cause unwanted behavior.  And as always, maintain version control and commit often!  
 
 Don't forget to pull before starting the uploader.
+
+
+## TODOS
+

@@ -1,11 +1,14 @@
+
 var fs = require('fs'),
 		request = require('request'),
 		chalk = require('chalk'),
+		argv = require('yargs').argv,
 		Gaze = require('gaze').Gaze;
 
 
 module.exports = function(options) {
 
+	//TODO* user proper console methods (warn, error) when appropriate
 	var logger = function(chalk, msg) {
 		var date = new Date(), 
 				hours = date.getHours() > 12 ? date.getHours()-12 : date.getHours(),
@@ -20,23 +23,36 @@ module.exports = function(options) {
 	HAPIKEY = options.hapikey || false,
 	PORTALID = options.portalId || false;
 
+
 	if (!HAPIKEY || !PORTALID) {
 		logger(chalk.red, 'Check that you have provided the "hapikey" and "portalID" options.');
 	}
 
+
 	//optional options
-	var TEMPLATEROOT = options.templateRoot || 'src/templates',
-			ASSETROOT = options.assetRoot || 'src/assets',
-			TEMPLATEDIR = options.templateDir || 'src/templates/*.html',
-			ASSETDIR = options.assetDir || 'src/assets/*.{css,js}',
-			DATAFILE = options.dataFile || 'src/data.json';
+
+	//*TODO - allow a single option for options.root 
+	// string or array of dirs (like gulp.src)
+	var FILEROOT = options.root || __dirname;
+
+	console.log(__dirname);
+
+	//old way -- don't need separate dirs, allow passing 
+	var TEMPLATEROOT = options.templateRoot || __dirname+'/src/templates',
+			ASSETROOT = options.assetRoot || __dirname+'/src/assets',
+			TEMPLATEDIR = options.templateDir || __dirname+'/src/templates/*.html',
+			ASSETDIR = options.assetDir || __dirname+'/src/assets/*.{css,js}',
+			DATAFILE = options.dataFile || __dirname+'/src/data.json';
+
 
 	//public api props
 	this.watcher = null; //expose gaze methods
 	this.fileData = {}; //complete template/asset list
 
+
 	//private props/utils
 	var metaDataRegex = /\[hubspot-metadata]([\w\W]*?)\[end-hubspot-metadata\]/,
+
 
 	getFilenameFromPath = function(path) {
 		var pathArr = path.split('/');
@@ -55,16 +71,19 @@ module.exports = function(options) {
 	},
 
 	//use these to get the 'category_id' & 'template_type' paramaters needed to create a template through the api
-	getNumericTemplateType = function(type) {
-		if (type === 'email') return 2;
-		if (type === 'page' || type === 'partial' || type === 'asset')  return 4;
-		if (type === 'blog')  return 6;
-	},
 	getNumericTemplateCat = function(type) {
 		if (type === 'asset') return 0;
 		if (type === 'email') return 2;
 		if (type === 'page' || type === 'partial')  return 1;
 		if (type === 'blog')	return 3;
+		if (type === '404') return 0;
+	},
+
+	getNumericTemplateType = function(type) {
+		if (type === 'email') return 2;
+		if (type === 'page' || type === 'partial' || type === 'asset')  return 4;
+		if (type === 'blog')  return 6;
+		if (type === '404') return 11;
 	},
 
 	//read hubspot metadata from a template
@@ -112,10 +131,10 @@ module.exports = function(options) {
 				return;
 			}
 			if (body.status === 'error') {
-				logger(chalk.red, 'API response error - '+body.message);
+				logger(chalk.red, 'API response error - '+getFilenameFromPath(localPath)+' - '+body.message);
 				if (Array.isArray(body.errors)) {
 					body.errors.forEach(function(item) {
-						console.log('------------- '+chalk.red(item.message));
+						console.log('- '+chalk.red(item.message));
 					});
 				}
 				return;
@@ -158,6 +177,15 @@ module.exports = function(options) {
 				logger(chalk.red, 'Server error - http status code '+res.statusCode);
 				return;
 			}
+			if (body.status === 'error') {
+				logger(chalk.red, 'API response error - '+getFilenameFromPath(localPath)+' - '+body.message);
+				if (Array.isArray(body.errors)) {
+					body.errors.forEach(function(item) {
+						console.log('- '+chalk.red(item.message));
+					});
+				}
+				return;
+			}
 			logger(chalk.green, 'Remote template '+getFilenameFromPath(localPath)+' has successfully updated.');
 		});
 	},
@@ -185,7 +213,8 @@ module.exports = function(options) {
 			}
 
 			getTemplateById(filemeta.id, function(error, res, body) {
-				//compare epochs, pull & replace if remote is newer, need to check diff because of time for API request
+				//compare epochs, pull & replace if remote is newer, 
+				//need to check diff with offset because of time for API request
 				if (body.updated-lastModLocal > 9000) {
 					fs.writeFileSync(fullPath, body.source);
 					logger(chalk.green, 'Newer remote Hubspot templates have been pulled to your local project.');
@@ -220,7 +249,7 @@ module.exports = function(options) {
 	startWatcher = function() {
 		this.watcher = new Gaze([TEMPLATEDIR, ASSETDIR]);
 		this.watcher.on('error', function(error) {
-			logger(chalk.red, 'The file watcher has thrown an error: '+error);
+			logger(chalk.red, 'File watcher error: '+error);
 		});
 		this.watcher.on('changed', updateRemoteTemplate);
 		this.watcher.on('added', createNewTemplate);

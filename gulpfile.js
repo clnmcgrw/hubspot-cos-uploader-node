@@ -1,11 +1,15 @@
+require('dotenv').config();
+
 var gulp = require('gulp'),
 		sass = require('gulp-sass'),
 		chalk = require('chalk'),
 		argv = require('yargs').argv;
 
-var config = require('./magnetic.config.js'),
-		uploader = require('./cos-uploader.js')(config.hubspot);
-
+		
+var uploader = require('./index.js')({
+			hapikey: process.env.HS_HAPIKEY,
+			portalId: process.env.HS_PORTALID
+		});
 
 
 

@@ -42,7 +42,7 @@ Uploader.sync();
 ```
 
 
-# Things To Note
+## Things To Note
 
 The synchronization feature of this package is not 100% bulletproof - avoid adding files and making changes before initializing watchers.
 

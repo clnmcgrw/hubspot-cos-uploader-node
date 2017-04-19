@@ -25,6 +25,7 @@ The `type` property of the hubspot metadata object can be "asset", "page", "emai
 var HubspotUploader = require('hubspot-uploader');
 
 //create instance
+//looks to 'src/templates' & 'src/assets' by default, this will change
 var Uploader = new HubspotUploader({
 	portalId: 'XXXXXX',
 	hapikey: 'XXXXXX'
@@ -52,4 +53,7 @@ Don't forget to pull before starting the uploader.
 
 
 ## TODOS
+
+- simplify user root options - path or array of paths
+- expose pull functionality through cli (cli.js)
 

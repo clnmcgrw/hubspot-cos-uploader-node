@@ -1,27 +1,28 @@
 {
   "name": "hubspot-cos-uploader",
-  "version": "1.0.1",
-  "description": "Synchronize a local foldler of templates with Hubspot's design manager",
+  "version": "1.0.2",
+  "description": "Synchronize a local foldler of templates & assets with Hubspot's design manager",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Colin McGraw",
   "license": "ISC",
   "repository": "github:clnmcgrw/hubspot-cos-uploader-node",
-  "bin" : {
+  "bin": {
     "hubspot-uploader": "./cli.js"
   },
   "devDependencies": {
     "dotenv": "^4.0.0",
     "gulp": "^3.9.1",
-    "gulp-sass": "^3.1.0",
     "yargs": "^7.0.2"
   },
   "dependencies": {
     "chalk": "^1.1.3",
     "gaze": "^1.1.2",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "simple-rate-limiter": "^0.2.3"
   }
 }

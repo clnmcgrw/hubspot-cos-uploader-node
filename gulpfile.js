@@ -1,28 +1,32 @@
+
+
+//store your hapikey somewhere that is .gitignore'd
 require('dotenv').config();
 
 var gulp = require('gulp'),
-		sass = require('gulp-sass'),
 		chalk = require('chalk'),
 		argv = require('yargs').argv;
 
-		
+//require 'hubspot-cos-uploader' if using as npm lib		
 var uploader = require('./index.js')({
 			hapikey: process.env.HS_HAPIKEY,
-			portalId: process.env.HS_PORTALID
+			portalId: process.env.HS_PORTALID,
+			root: 'src/templates',
 		});
 
 
 
-gulp.task('uploader-sync', [], function() {
-	return uploader.sync();
-});
-gulp.task('uploader-start', function() {
-	return uploader.start();
+gulp.task('cos-uploader', function() {
+	return uploader.sync().then(uploader.start);
 });
 
 
-//Pulls Remote Hubspot Template By ID -------------------------//
+//Task To Pull Remote Hubspot Template By ID -------------------------//
+//example use:  gulp pull --id=XXXXXXXXXX --path=path/to/my/folder
+//path is optional, will fall back to first path in options.root
 gulp.task('pull', function() {
+	console.log(argv);
+	return; 
 	if (argv.id) {
 		uploader.pull(argv.id);
 	} else {
@@ -32,6 +36,4 @@ gulp.task('pull', function() {
 
 
 
-gulp.task('default', ['uploader-sync', 'uploader-start'], function() {
-
-});
+gulp.task('default', ['cos-uploader'], function() {});

@@ -1,38 +1,43 @@
 
-
 # Hubspot COS Uploader for NodeJS
 
-This project was inspired by Hubspot's original COS Uploader tool built on Python.  It contains a few improvements, including the ability to synchronize with remote templates and ensure that newer work does not get overwritten.
+This project was inspired by Hubspot's original COS Uploader tool built on Python.  It contains a few improvements, including the ability to synchronize with remote templates and more closely ensure that newer work doesn't get overwritten. However, it does currently require you to genrate a "hapikey" rather than putting you throught the OAuth2 flow.
 
-Just like the original Python version, each template or asset file needs metadata inside a comment:
+Just like Hubspot's original cos uploader, each template or asset file needs metadata inside a comment:
 
 ``` html
 <!-- [hubspot-metadata] {"type":"page","path":"design/manager/file/path/filename.html"} [end-hubspot-metadata] -->
 ```
 
-The `type` property of the hubspot metadata object can be "asset", "page", "email", "blog", or "partial".  Path is the destination location and filename in the design manager.  ID will be written back to the file once it is created in Hubspot.
+The `type` property of the hubspot metadata object can be "asset", "page", "email", "blog", "404", or "partial".  Path is the destination location and filename in the design manager.  ID will be written back to the file once it is created in Hubspot.
 
-	* Page - a landing or website page
-	* Email - an email template
-	* Blog - a blog listing or single template
-	* Partial - a template that is not "available for new content"...usually for includes
+-`Page` - a landing or website page
+-`Email` - an email template
+-`Blog` - a blog listing or single template
+-`Partial` - a template that is not "available for new content"...usually for includes
+-`404` - a "system template" for 404 error pages
 
 
 ## Usage
 
 ``` javascript
 //require it
-var HubspotUploader = require('hubspot-uploader');
+var HubspotUploader = require('hubspot-cos-uploader');
 
-//create instance
-//looks to 'src/templates' & 'src/assets' by default, this will change
+//create an uploader instance
 var Uploader = new HubspotUploader({
+	//required 
 	portalId: 'XXXXXX',
-	hapikey: 'XXXXXX'
+	hapikey: 'XXXXXXX',
+
+	//optional, relative to project root 
+	//can be single path or array of paths
+	root: [__dirname+'/src/templates', __dirname+'/src/assets']
 });
 
-//pull a remote template
-Uploader.pull(fileId);
+//pull a remote template (currently remote template must have metadata)
+//localpath is optional & will default to first directory from "root" option
+Uploader.pull(fileId, localpath);
 
 //start watchers
 Uploader.start();
@@ -40,20 +45,41 @@ Uploader.start();
 //sync with remote
 Uploader.sync();
 
+
+//need more? full functionality of gaze is exposed on watcher prop 
+//https://www.npmjs.com/package/gaze#documentation
+Uploader.watcher
+
+```
+
+## Use With Build Tools
+
+A common way to use it in a gulp build is to run the `start` method once (after the `sync` method finishes) as part of your default gulp task.  There is a `gulpfile` in this package's root that shows a more thorough example of a Gulp integration.
+
+``` javascript
+var uploader = require('hubspot-cos-uploader')({
+	hapikey: 'XXXXXXXXXX'
+});
+
+gulp.task('default', function() {
+	uploader.sync().then(uploader.start);
+});
+
 ```
 
 
 ## Things To Note
 
-The synchronization feature of this package is not 100% bulletproof - avoid adding files and making changes before initializing watchers.
+The synchronization feature of this package is not 100% bulletproof - avoid adding files and making changes before initializing watchers. Since file events can only be known about once the watchers are started, work done outside the watched environment may cause unwanted behavior.  
 
-Since file events can only be known about once the watchers are started, work done outside the watched environment may cause unwanted behavior.  And as always, maintain version control and commit often!  
-
-Don't forget to pull before starting the uploader.
+And as always, maintain version control and commit often!  
 
 
 ## TODOS
 
-- simplify user root options - path or array of paths
-- expose pull functionality through cli (cli.js)
+- expose functionality through cli (cli.js)
+- use proper console methods for logging (currently all are .log, need warn & error)
+- check for allowing whitespace in metadata comments, should allow line breaks
+- notify if close to reaching daily limit for API reqs (40K/day)
+- ** allow OAuth flow option for auth
 

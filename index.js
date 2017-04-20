@@ -8,21 +8,16 @@ var fs = require('fs'),
 var utils = require('./lib/utils.js');
 
 
-
 module.exports = function(options) {
 	var logger = utils.logger,
 
 	options = options || {};
 	
 	//required
-	var HAPIKEY = options.hapikey || false;
-	if (!HAPIKEY) {
-		logger(chalk.red, 'Check that you have provided the "hapikey" option.');
-	}
-
+	var HAPIKEY = options.hapikey || false,
 	// optional - string or array of dirs
-	var ROOT = options.root || __dirname,
-			ROOTFILES = utils.isArray(ROOT) ? ROOT.map((item) => {return item+'/*.{html,css,js}'}) : ROOT+'/*.{html,css,js}';
+	ROOT = options.root || __dirname,
+	ROOTFILES = utils.isArray(ROOT) ? ROOT.map((item) => {return item+'/*.{html,css,js}'}) : ROOT+'/*.{html,css,js}';
 
 	//public api props
 	this.watcher = null; //expose gaze methods
@@ -193,6 +188,8 @@ module.exports = function(options) {
 
 	//sync local and remote templates
 	doSyncNewer = function() {
+		if (!HAPIKEY) return;
+
 		var allFiles = getFilelistFromRoot(ROOT),
 				allProcessed = [];
 
@@ -233,6 +230,8 @@ module.exports = function(options) {
 
 	//pull a remote template (not yet in local project) created by someone else
 	doRemotePull = (templateId, filePath=false) => {
+		if (!HAPIKEY) return;
+		
 		getTemplateById(templateId, function(error, res, body) {
 			if (error !== null || res.statusCode !== 200) {
 				logger(chalk.red, 'Error during API request - http status code '+res.statusCode);
@@ -243,10 +242,14 @@ module.exports = function(options) {
 				logger(chalk.red, 'Remote template with id '+templateId+' does not contain JSON metadata');
 				return;
 			}
-					
-			var pathArr = metadata.path.split('/'),
+			if (!metadata.id) {
+				logger(chalk.red, 'The metadata in remote template with id '+templateId+' is incomplete');
+				return;
+			}
+
+			var filename = getFilenameFromPath(metadata.path),
 					writePrefix = utils.isArray(ROOT) ? ROOT[0] : ROOT,
-					fileToWrite = !filePath ? writePrefix+'/'+pathArr[pathArr.length-1] : filePath+'/'+pathArr[pathArr.length-1];
+					fileToWrite = !filePath ? writePrefix+'/'+filename : filePath+'/'+filename;
 			fs.writeFileSync(fileToWrite, body.source);
 			logger(chalk.green, 'Sucessfully pulled file id '+metadata.id+' & saved in '+fileToWrite);
 		});
@@ -255,6 +258,8 @@ module.exports = function(options) {
 
 	//sets up file watching w/ gaze
 	startWatcher = function() {
+		if (!HAPIKEY) return;
+
 		this.watcher = new Gaze(ROOTFILES);
 		this.watcher.on('error', function(error) {
 			logger(chalk.red, 'File watcher error: '+error);
@@ -264,6 +269,9 @@ module.exports = function(options) {
 		logger(chalk.green, 'File watchers started.');
 	};
 
+	if (!HAPIKEY) {
+		logger(chalk.red, 'Check that you have provided the "hapikey" option.');
+	}
 
 	return {
 		pull: doRemotePull,

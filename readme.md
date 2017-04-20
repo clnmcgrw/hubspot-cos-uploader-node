@@ -1,7 +1,7 @@
 
 # Hubspot COS Uploader for NodeJS
 
-This project was inspired by Hubspot's original COS Uploader tool built on Python.  It contains a few improvements, including the ability to synchronize with remote templates and more closely ensure that newer work doesn't get overwritten. However, it does currently require you to genrate a "hapikey" rather than putting you throught the OAuth2 flow.
+This project was inspired by Hubspot's original COS Uploader tool built on Python.  It contains a few improvements, including the ability to synchronize with remote templates and more closely ensure that newer work doesn't get overwritten. However, it does currently require you to [genrate a "hapikey"](https://knowledge.hubspot.com/articles/kcs_article/integrations/how-do-i-get-my-hubspot-api-key) rather than putting you throught the OAuth2 flow.
 
 Just like Hubspot's original cos uploader, each template or asset file needs metadata inside a comment:
 
@@ -11,11 +11,11 @@ Just like Hubspot's original cos uploader, each template or asset file needs met
 
 The `type` property of the hubspot metadata object can be "asset", "page", "email", "blog", "404", or "partial".  Path is the destination location and filename in the design manager.  ID will be written back to the file once it is created in Hubspot.
 
--`Page` - a landing or website page
--`Email` - an email template
--`Blog` - a blog listing or single template
--`Partial` - a template that is not "available for new content"...usually for includes
--`404` - a "system template" for 404 error pages
+- `Page` - a landing or website page
+- `Email` - an email template
+- `Blog` - a blog listing or single template
+- `Partial` - a template that is not "available for new content"...usually for includes
+- `404` - a "system template" for 404 error pages
 
 
 ## Usage
@@ -27,8 +27,7 @@ var HubspotUploader = require('hubspot-cos-uploader');
 //create an uploader instance
 var Uploader = new HubspotUploader({
 	//required 
-	portalId: 'XXXXXX',
-	hapikey: 'XXXXXXX',
+	hapikey: 'XXXXXXXXXXX',
 
 	//optional, relative to project root 
 	//can be single path or array of paths
@@ -79,7 +78,6 @@ And as always, maintain version control and commit often!
 
 - expose functionality through cli (cli.js)
 - use proper console methods for logging (currently all are .log, need warn & error)
-- check for allowing whitespace in metadata comments, should allow line breaks
 - notify if close to reaching daily limit for API reqs (40K/day)
 - ** allow OAuth flow option for auth
 

@@ -10,8 +10,7 @@ var gulp = require('gulp'),
 //require 'hubspot-cos-uploader' if using as npm lib		
 var uploader = require('./index.js')({
 			hapikey: process.env.HS_HAPIKEY,
-			portalId: process.env.HS_PORTALID,
-			root: 'src/templates',
+			root: ['src/templates', 'src/assets']
 		});
 
 
@@ -25,8 +24,6 @@ gulp.task('cos-uploader', function() {
 //example use:  gulp pull --id=XXXXXXXXXX --path=path/to/my/folder
 //path is optional, will fall back to first path in options.root
 gulp.task('pull', function() {
-	console.log(argv);
-	return; 
 	if (argv.id) {
 		uploader.pull(argv.id);
 	} else {

@@ -20,6 +20,8 @@ The `type` property of the hubspot metadata object can be "asset", "page", "emai
 
 ## Usage
 
+The only required option is `hapikey`, which is a [hubspot api key](https://knowledge.hubspot.com/articles/kcs_article/integrations/how-do-i-get-my-hubspot-api-key).  The `root` option is the path(s) to watch for file changes.It can be a string or array (path or array of paths), defaults to the current working directory.
+
 ``` javascript
 //require it
 var HubspotUploader = require('hubspot-cos-uploader');

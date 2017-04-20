@@ -79,7 +79,7 @@ And as always, maintain version control and commit often!
 ## TODOS
 
 - expose functionality through cli (cli.js)
-- use proper console methods for logging (currently all are .log, need warn & error)
+- use proper console methods for logging (currently all are .log)
 - notify if close to reaching daily limit for API reqs (40K/day)
-- ** allow OAuth flow option for auth
+- OAuth flow instead of hapikey
 

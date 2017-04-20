@@ -25,7 +25,8 @@ gulp.task('cos-uploader', function() {
 //path is optional, will fall back to first path in options.root
 gulp.task('pull', function() {
 	if (argv.id) {
-		uploader.pull(argv.id);
+		var path = argv.path ? argv.path : false;
+		uploader.pull(argv.id, path);
 	} else {
 		console.log(chalk.red('No ID parameter was provided...Did you run gulp pull --id=XXXXXXX ?'));
 	}

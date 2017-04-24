@@ -16,7 +16,7 @@ module.exports = function(options) {
 	//required
 	var HAPIKEY = options.hapikey || false,
 	// optional - string or array of dirs
-	ROOT = options.root || __dirname,
+	ROOT = options.root || './',
 	ROOTFILES = utils.isArray(ROOT) ? ROOT.map((item) => {return item+'/*.{html,css,js}'}) : ROOT+'/*.{html,css,js}';
 
 	//public api props
@@ -37,13 +37,15 @@ module.exports = function(options) {
 			for (var i=0; i < root.length; i++) {
 				var pathFiles = fs.readdirSync(root[i]);
 				pathFiles.forEach((file, index) => {
-					result.push(__dirname+'/'+root[i]+'/'+file);
+					var fullfile = root[i].endsWith('/') ? root[i]+file : root[i]+'/'+file;
+					result.push(fullfile);
 				});
 			}
 		} else {
 			var pathFiles = fs.readdirSync(root);
 			pathFiles.forEach((file) => {
-				result.push(__dirname+'/'+root+'/'+file);
+				var fullfile = root.endsWith('/') ? root+file : root+'/'+file;
+				result.push(fullfile);
 			});
 		}
 		return result;

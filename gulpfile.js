@@ -10,7 +10,7 @@ var gulp = require('gulp'),
 //require 'hubspot-cos-uploader' if using as npm lib		
 var uploader = require('./index.js')({
 			hapikey: process.env.HS_HAPIKEY,
-			root: ['src/templates', 'src/assets']
+			root: 'src/templates'
 		});
 
 

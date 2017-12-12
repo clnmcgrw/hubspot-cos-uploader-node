@@ -1,11 +1,11 @@
 
-var fs = require('fs'),
-		request = require('request'),
-		limit = require('simple-rate-limiter'),
-		chalk = require('chalk'),
-		Gaze = require('gaze').Gaze;
+const fs = require('fs');
+const request = require('request');
+const limit = require('simple-rate-limiter');
+const chalk = require('chalk');
+const Gaze = require('gaze').Gaze;
 
-var utils = require('./lib/utils.js');
+const utils = require('./lib/utils.js');
 
 
 module.exports = function(options) {
@@ -260,20 +260,19 @@ module.exports = function(options) {
 
 	//sets up file watching w/ gaze
 	startWatcher = function() {
-		if (!HAPIKEY) return;
+		if (!HAPIKEY) {
+			logger(chalk.red, 'Check that you have provided the "hapikey" option.');
+			return;
+		}
 
 		this.watcher = new Gaze(ROOTFILES);
-		this.watcher.on('error', function(error) {
-			logger(chalk.red, 'File watcher error: '+error);
-		});
+
 		this.watcher.on('changed', updateRemoteTemplate);
 		this.watcher.on('added', createNewTemplate);
-		logger(chalk.green, 'File watchers started.');
-	};
 
-	if (!HAPIKEY) {
-		logger(chalk.red, 'Check that you have provided the "hapikey" option.');
-	}
+		this.watcher.on('error', error => logger(chalk.red, 'File watcher error: '+error));
+		this.watcher.on('ready', watcher => logger(chalk.green, 'File watchers started.'));
+	};
 
 	return {
 		pull: doRemotePull,

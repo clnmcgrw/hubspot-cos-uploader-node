@@ -1,0 +1,18 @@
+html {
+  margin: 0;
+  padding: 0; }
+
+body {
+  background: #a5a5a5;
+  color: #373737;
+  min-height: 200vh; }
+
+.inner {
+  width: 90%;
+  margin: 0 auto; }
+
+/* [hubspot-metadata] {
+  "type":"asset",
+  "path":"custom/page/css/example.css",
+  "id":4969596750
+} [end-hubspot-metadata] */

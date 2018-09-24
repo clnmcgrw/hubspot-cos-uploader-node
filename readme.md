@@ -41,7 +41,7 @@ var HubspotUploader = require('hubspot-cos-uploader');
 var Uploader = new HubspotUploader({
 	
   //required 
-	hapikey: 'XXXXXXXXXXX',
+  hapikey: 'XXXXXXXXXXX',
   
   // defaults to "hubspot-files"
   files: 'hubspot-files', 

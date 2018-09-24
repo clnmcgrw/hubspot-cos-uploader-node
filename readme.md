@@ -3,7 +3,7 @@
 
 #### Important Notes for V2
 
-Hubspot's COS CMS has changed a lot...it is no longer ideal to serve css & js from the "design manager" (the hubl function `get_public_template_url('path/to/asset')` is being deprecated, or at least they warn against using it).
+Hubspot's ~~COS~~ CMS has changed a lot...it is no longer ideal to serve css & js from the "design manager" (the hubl function `get_public_template_url('path/to/asset')` is being deprecated, or at least they warn against using it).
 
 So, v2 of this tool has been adapted to place css/js files in the "file manager", and print the cdn url in the console.
 

@@ -44,13 +44,10 @@ var Uploader = new HubspotUploader({
 	hapikey: 'XXXXXXXXXXX',
   
   // defaults to "hubspot-files"
-  files: '', 
+  files: 'hubspot-files', 
 
   // defaults to "hubspot-templates"
-  templates: '',
-
-  //file manager destination folder
-  remote_folder: 'cos_uploader_assets'
+  templates: 'hubspot-templates',
 });
 
 //pull a remote template (currently remote template must have metadata)

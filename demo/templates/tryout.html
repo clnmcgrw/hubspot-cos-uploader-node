@@ -1,21 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
 	<meta charset="UTF-8">
 	<title>Example Hubspot Template</title>
 
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+	
 	{{standard_header_includes}}
+
+	<style>
+		.inner {
+			width: 90%;
+			max-width: 1380px;
+			margin: 0 auto;
+		}
+		.main {
+			text-align: center;
+		}
+	</style>
 </head>
+
 <body>
 	<header class="app-header">
 		<div class="inner">
-			<h1>Tryout!!!!!! Neew Chlange</h1>
 		</div>
 	</header>
+
+	<main class="main">
+		
+		<section>
+			<div class="inner">
+
+				{% if dynamic_page_hubdb_row %}
+				
+					<h3>It's the single row page</h3>
+					<p>{{dynamic_page_hubdb_row.Name}}</p>
+					<p><a href="/demo-events-page">Back to events page...</a></p>
+					<p>{{dynamic_page_hubdb_row.description}}</p>
+
+				{% else %}
+
+					<h3>It's the listing page</h3>
+					<p>The table id is {{dynamic_page_hubdb_table.id}}</p>
+
+					{% set tableInfo = hubdb_table(dynamic_page_hubdb_table.id) %}
+					{% set tableData = hubdb_table_rows(dynamic_page_hubdb_table.id) %}
+					
+					<ul style="list-style:none;padding:0;margin:0;">
+					{% for row in tableData %}
+						<li>
+							<h4 style="margin:0;">{{row.Name}}</h4>
+							<a href="/demo-events-page/{{row.hs_path}}">View Page</a>
+						</li>
+					{% endfor %}
+					</ul>
+				
+				{% endif %}
+
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		<div class="inner"></div>
+	</footer>
 	
 	{{standard_footer_includes}}
 </body>
 </html>
+
 
 <!-- [hubspot-metadata] {"type":"page","path":"custom/page/pages/tryout.html","id":4975072959} [end-hubspot-metadata] -->

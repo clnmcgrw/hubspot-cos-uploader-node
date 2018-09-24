@@ -13,16 +13,20 @@ var gulp = require('gulp'),
 		argv = require('yargs').argv;
 
 
-//require 'hubspot-cos-uploader' if using as npm lib		
+//require 'hubspot-cos-uploader' if using as npm lib
 var uploader = require('./index.js')({
 	hapikey: process.env.HS_HAPIKEY,
-	root: ['demo/templates', 'demo/assets']
+	files: 'demo/assets',
+	templates: 'demo/templates'
 });
 
 
 //start the cos-uploader after syncing remote changes
 gulp.task('cos-uploader', function() {
-	return uploader.sync().then(uploader.start);
+	uploader.sync().then(() => { 
+		uploader.start();
+		console.log(uploader);
+	}).catch(err => console.log(err));
 });
 
 

@@ -76,7 +76,5 @@ var DemoClass = function DemoClass(options) {
   _classCallCheck(this, DemoClass);
 };
 
-/* [hubspot-metadata] {"type":"asset","path":"custom/page/js/app.bundle.js","id":5462531759} [end-hubspot-metadata] */
-
 /***/ })
 /******/ ]);

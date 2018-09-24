@@ -1,4 +1,9 @@
 
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 html {
   margin: 0;
   padding: 0;
@@ -16,8 +21,3 @@ body {
 }
 
 
-/* [hubspot-metadata] {
-  "type":"asset",
-  "path":"custom/page/css/example.css",
-  "id":4969596750
-} [end-hubspot-metadata] */

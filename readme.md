@@ -1,7 +1,18 @@
 
 # Hubspot COS Uploader for NodeJS
 
-This project was inspired by Hubspot's original COS Uploader tool built on Python.  It contains a few improvements, including the ability to synchronize with remote templates and more closely ensure that newer work doesn't get overwritten. However, it does currently require you to [genrate a "hapikey"](https://knowledge.hubspot.com/articles/kcs_article/integrations/how-do-i-get-my-hubspot-api-key) rather than putting you throught the OAuth2 flow.
+#### Important Notes for V2
+
+Hubspot's COS CMS has changed a lot...it is no longer ideal to serve css & js from the "design manager" (the hubl function `get_public_template_url('path/to/asset')` is being deprecated, or at least they warn against using it).
+
+So, v2 of this tool has been adapted to place css/js files in the "file manager", and print the cdn url in the console.
+
+
+---
+
+### Project Info
+
+This project was inspired by Hubspot's original COS Uploader Python tool.  It contains a few improvements, including the ability to synchronize with remote templates and more closely ensure that newer work doesn't get overwritten. However, it does currently require you to [genrate a "hapikey"](https://knowledge.hubspot.com/articles/kcs_article/integrations/how-do-i-get-my-hubspot-api-key) rather than putting you throught the OAuth2 flow.
 
 Just like Hubspot's original cos uploader, each template or asset file needs metadata inside a comment:
 
@@ -28,12 +39,18 @@ var HubspotUploader = require('hubspot-cos-uploader');
 
 //create an uploader instance
 var Uploader = new HubspotUploader({
-	//required 
+	
+  //required 
 	hapikey: 'XXXXXXXXXXX',
+  
+  // defaults to "hubspot-files"
+  files: '', 
 
-	//optional, relative to project root 
-	//can be single path or array of paths
-	root: [__dirname+'/src/templates', __dirname+'/src/assets']
+  // defaults to "hubspot-templates"
+  templates: '',
+
+  //file manager destination folder
+  remote_folder: 'cos_uploader_assets'
 });
 
 //pull a remote template (currently remote template must have metadata)
@@ -43,13 +60,11 @@ Uploader.pull(fileId, localpath);
 //start watchers
 Uploader.start();
 
-//sync with remote
-Uploader.sync();
+//sync with remote, returns a promise...
+var sync = Uploader.sync();
 
-
-//need more? full functionality of gaze is exposed on watcher prop 
-//https://www.npmjs.com/package/gaze#documentation
-Uploader.watcher
+//so you can use it as a way to pull updated templates
+sync.then(() => Uploader.start());
 
 ```
 
@@ -69,17 +84,4 @@ gulp.task('default', function() {
 ```
 
 
-## Things To Note
-
-The synchronization feature of this package is not 100% bulletproof - avoid adding files and making changes before initializing watchers. Since file events can only be known about once the watchers are started, work done outside the watched environment may cause unwanted behavior.  
-
-And as always, maintain version control and commit often!  
-
-
-## TODOS
-
-- expose functionality through cli (cli.js)
-- use proper console methods for logging (currently all are .log)
-- notify if close to reaching daily limit for API reqs (40K/day)
-- OAuth flow instead of hapikey
 

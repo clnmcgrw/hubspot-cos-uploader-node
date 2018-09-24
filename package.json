@@ -1,6 +1,6 @@
 {
   "name": "hubspot-cos-uploader",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Synchronize a local foldler of templates & assets with Hubspot's design manager",
   "main": "index.js",
   "scripts": {

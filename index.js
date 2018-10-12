@@ -68,14 +68,7 @@ function Uploader(options) {
 
   // "sync" method
   function sync() {
-    return new Promise((resolve, reject) => {
-      let condition = true;
-      if (condition) {
-        resolve();
-      } else {
-        reject();
-      }
-    });
+    return remoteSync(DIRS);
   };
 
   // pull a design-manager template
@@ -84,12 +77,8 @@ function Uploader(options) {
       .then(msg => logger(msg, 'log'))
       .catch(msg => logger(msg, 'error'));
   };
-  // pull a file-manager file
-  function pullFile(id) {
-
-  };
   
-  return { start, sync, pullTemplate, pullFile };
+  return { start, sync, pullTemplate };
 };
 
 
